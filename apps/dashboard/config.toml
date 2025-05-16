@@ -1,0 +1,35 @@
+[DATABASE]
+NEON_URL = "postgresql://neondb_owner:npg_v8XPUjLWB4yN@ep-billowing-moon-a4kypee4-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+
+[GENERAL]
+SIMILARITY_MEASURE = "cosine"
+KEEP_ALIVE = "5m"
+
+[MODELS.OPENAI]
+API_KEY = "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"
+
+[MODELS.GROQ]
+API_KEY = "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"
+
+[MODELS.ANTHROPIC]
+API_KEY = ""
+
+[MODELS.GEMINI]
+API_KEY = ""
+
+[MODELS.CUSTOM_OPENAI]
+API_KEY = "Get the api key from taam cloud"
+API_URL = "https://api.taam.cloud/v1"
+MODEL_NAME = "use any model"
+
+[MODELS.OLLAMA]
+API_URL = ""
+
+[MODELS.DEEPSEEK]
+API_KEY = ""
+
+[MODELS.LM_STUDIO]
+API_URL = ""
+
+[API_ENDPOINTS]
+SEARXNG = "https://searxng.taam.info"
