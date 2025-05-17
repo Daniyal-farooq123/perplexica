@@ -127,7 +127,7 @@ export function SignInCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-base lg:text-lg text-red-500">
+        <CardTitle className="text-base lg:text-lg">
           Sign in to your account
         </CardTitle>
         <CardDescription>

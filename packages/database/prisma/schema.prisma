@@ -16,7 +16,7 @@ model Message {
   id        Int      @id @default(autoincrement())
   content   String
   chatId    String
-  messageId String
+  messageId String @unique
   role      Role
   metadata  Json?
 

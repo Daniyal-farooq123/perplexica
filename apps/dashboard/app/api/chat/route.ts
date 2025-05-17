@@ -9,9 +9,10 @@ import {
   getAvailableChatModelProviders,
   getAvailableEmbeddingModelProviders,
 } from '../../../lib/perplexica/providers';
-import {db} from '../../../lib/perplexica/db';
-import { chats, messages as messagesSchema } from '../../../lib/perplexica/db/schema';
-import { and, eq, gt } from 'drizzle-orm';
+// Remove Drizzle imports
+// import {db} from '../../../lib/perplexica/db';
+// import { chats, messages as messagesSchema } from '../../../lib/perplexica/db/schema';
+// import { and, eq, gt } from 'drizzle-orm';
 import { getFileDetails } from '../../../lib/perplexica/utils/files';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { ChatOpenAI } from '@langchain/openai';
@@ -21,6 +22,9 @@ import {
   getCustomOpenaiModelName,
 } from '../../../lib/perplexica/config';
 import { searchHandlers } from '../../../lib/perplexica/search';
+
+import { prisma } from '@workspace/database/client';
+
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -101,30 +105,19 @@ const handleEmitterEvents = async (
     );
     writer.close();
 
-    db.insert(messagesSchema)
-      .values({
+    // Replace Drizzle insert with Prisma create
+ prisma.message.create({
+      data: {
         content: recievedMessage,
         chatId: chatId,
         messageId: aiMessageId,
         role: 'assistant',
-        metadata: JSON.stringify({
+        metadata: {
           createdAt: new Date(),
-          ...(sources && sources.length > 0 && { sources }),
-        }),
-      })
-      .execute();
-  });
-  stream.on('error', (data) => {
-    const parsedData = JSON.parse(data);
-    writer.write(
-      encoder.encode(
-        JSON.stringify({
-          type: 'error',
-          data: parsedData.data,
-        }),
-      ),
-    );
-    writer.close();
+          ...(sources?.length > 0 && { sources })
+        }
+      }
+    });
   });
 };
 
@@ -134,50 +127,47 @@ const handleHistorySave = async (
   focusMode: string,
   files: string[],
 ) => {
-  const chat = await db.query.chats.findFirst({
-    where: eq(chats.id, message.chatId),
+  // Replace Drizzle query with Prisma
+  const chat = await prisma.chat.findUnique({
+    where: { id: message.chatId }
   });
 
   if (!chat) {
-    await db
-      .insert(chats)
-      .values({
+    await prisma.chat.create({
+      data: {
         id: message.chatId,
         title: message.content,
-        createdAt: new Date().toString(),
+        createdAt: new Date().toISOString(),
         focusMode: focusMode,
         files: files.map(getFileDetails),
-      })
-      .execute();
+      }
+    });
   }
 
-  const messageExists = await db.query.messages.findFirst({
-    where: eq(messagesSchema.messageId, humanMessageId),
+  const messageExists = await prisma.message.findUnique({
+    where: { id: Number(humanMessageId) }
   });
 
   if (!messageExists) {
-    await db
-      .insert(messagesSchema)
-      .values({
+    await prisma.message.create({
+      data: {
         content: message.content,
         chatId: message.chatId,
         messageId: humanMessageId,
         role: 'user',
-        metadata: JSON.stringify({
-          createdAt: new Date(),
-        }),
-      })
-      .execute();
+        metadata: {
+          createdAt: new Date()
+        }
+      }
+    });
   } else {
-    await db
-      .delete(messagesSchema)
-      .where(
-        and(
-          gt(messagesSchema.id, messageExists.id),
-          eq(messagesSchema.chatId, message.chatId),
-        ),
-      )
-      .execute();
+    // Replace Drizzle delete with Prisma
+    await prisma.message.deleteMany({
+      where: {
+        chatId: message.chatId,
+        id: { gt: messageExists.id }
+      }
+    });
   }
 };
 

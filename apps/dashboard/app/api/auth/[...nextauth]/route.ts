@@ -13,9 +13,9 @@ const reqWithDashboardOrigin = (req: NextRequest): NextRequest => {
 };
 
 export const GET = (req: NextRequest) => {
-  return handlers.GET(reqWithDashboardOrigin(req));
+  return handlers.GET(reqWithDashboardOrigin(req) as any);
 };
 
 export const POST = (req: NextRequest) => {
-  return handlers.POST(reqWithDashboardOrigin(req));
+  return handlers.POST(reqWithDashboardOrigin(req) as any);
 };
