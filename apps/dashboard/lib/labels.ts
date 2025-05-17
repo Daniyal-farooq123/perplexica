@@ -25,8 +25,13 @@ export const contactRecordLabel: Record<ContactRecord, string> = {
 };
 
 export const roleLabels: Record<Role, string> = {
+
   [Role.MEMBER]: 'Member',
-  [Role.ADMIN]: 'Admin'
+  [Role.ADMIN]: 'Admin',
+  [Role.assistant]: 'assistant',
+  [Role.user]: 'user',
+
+  // "assistant" | "user"
 };
 
 export const feedbackCategoryLabels: Record<FeedbackCategory, string> = {
