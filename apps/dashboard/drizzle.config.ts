@@ -11,6 +11,6 @@ export default {
   schema: './src/lib/db/schema.ts',
   out: './drizzle',
   dbCredentials: {
-    url: config.DATABASE.NEON_URL as string,
+    url: (config as any).DATABASE.NEON_URL as string,
   },
 } satisfies Config
