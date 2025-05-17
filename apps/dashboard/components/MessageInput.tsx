@@ -2,7 +2,7 @@ import { cn } from '../lib/perplexica/utils';
 import { ArrowUp } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import Attach from './MessageInputActions/Attach';
+// import Attach from './MessageInputActions/Attach';
 import CopilotToggle from './MessageInputActions/Copilot';
 import { File } from './ChatWindow';
 import AttachSmall from './MessageInputActions/AttachSmall';
